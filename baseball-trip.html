@@ -316,9 +316,9 @@
 
 <section id="eligible" class="view">
   <p class="maphint">
-    The sacred rule: a ballpark is only fair game if <b>three or fewer</b> of the five of us have
-    already been. Here's everything the hat is still allowed to pull. Red dot = that guy's been;
-    fewer reds = fresher meat. 🎩
+    The sacred rule: a ballpark is only fair game if <b>fewer than three</b> of the five of us have
+    already been (so 0, 1, or 2 — hit 3 and it's burned). Here's everything the hat is still allowed
+    to pull. Red dot = that guy's been; fewer reds = fresher meat. 🎩
   </p>
   <div class="elig-grid" id="eligibleGrid"></div>
   <div class="maxed" id="maxedOut"></div>
@@ -548,7 +548,7 @@ const parks=[
 ];
 parks.forEach(p=>{
   p.count=p.been.reduce((a,b)=>a+b,0);
-  p.eligible = p.count<=3 || p.reset;     // reset = new park in an old city (clock restarts)
+  p.eligible = p.count<3 || p.reset;       // fewer than 3 of us have been (reset = new park in an old city)
   p.weight = p.count===0 ? 2 : 1;          // never-been parks go in the hat double
 });
 
@@ -583,7 +583,7 @@ document.getElementById('eligibleGrid').innerHTML = eligibleParks.map(p=>
 ).join('');
 
 document.getElementById('maxedOut').innerHTML =
-  `<h4>🚫 Off the table — too popular (4–5 of us have been)</h4>
+  `<h4>🚫 Off the table — too popular (3 or more of us have been)</h4>
    <p class="note">The hat is forbidden from drawing these. We've worn them out.</p>
    <div class="chips">${maxedParks.map(p=>`<span class="chip">${p.team} <b>${p.count}/5</b></span>`).join('')}</div>`;
 
