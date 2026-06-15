@@ -330,6 +330,7 @@
 
 <div class="lightbox" id="lightbox"><img id="lightboxImg" src="" alt="" /></div>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
   integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 <script>
@@ -343,7 +344,7 @@ const SUPABASE_ANON_KEY = "";   // your "anon public" key
 const PHOTO_BUCKET      = "onslow-photos";
 
 /* Master switch: set false to ship a clean static site with NO notes/photos. */
-const ENABLE_SCRAPBOOK  = false;
+const ENABLE_SCRAPBOOK  = true;
 
 /* ---------- THE SACRED DATA ---------- */
 const trips = [

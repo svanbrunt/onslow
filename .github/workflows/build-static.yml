@@ -1,0 +1,40 @@
+name: Build static site
+
+# Whenever you push a change to the full source file (baseball-trip.html),
+# regenerate the public static index.html (scrapbook disabled, Supabase script
+# stripped) and commit it back. GitHub Pages then redeploys index.html from main.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'baseball-trip.html'
+      - '.github/workflows/build-static.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Generate static index.html
+        run: |
+          sed -e 's/const ENABLE_SCRAPBOOK  = true;/const ENABLE_SCRAPBOOK  = false;/' \
+              -e '/cdn.jsdelivr.net\/npm\/@supabase\/supabase-js/d' \
+              baseball-trip.html > index.html
+
+      - name: Commit if changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          if git diff --quiet index.html; then
+            echo "index.html already up to date — nothing to do."
+          else
+            git add index.html
+            git commit -m "Auto-build static index.html from baseball-trip.html"
+            git push
+          fi
