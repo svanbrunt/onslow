@@ -519,7 +519,7 @@ const parks=[
   {team:"Rays",         stadium:"Tropicana Field",       city:"St. Petersburg, FL",been:[1,1,0,0,1]},
   {team:"Orioles",      stadium:"Camden Yards",          city:"Baltimore, MD",    been:[1,1,1,1,1]},
   {team:"Blue Jays",    stadium:"Rogers Centre",         city:"Toronto, ON",      been:[1,1,1,1,1]},
-  {team:"Red Sox",      stadium:"Fenway Park",           city:"Boston, MA",       been:[1,1,0,0,0]},
+  {team:"Red Sox",      stadium:"Fenway Park",           city:"Boston, MA",       been:[1,1,1,0,0]},
   {team:"Guardians",    stadium:"Progressive Field",     city:"Cleveland, OH",    been:[1,0,0,0,0], next2027:true},
   {team:"White Sox",    stadium:"Rate Field",            city:"Chicago, IL",      been:[1,1,1,1,1]},
   {team:"Royals",       stadium:"Kauffman Stadium",      city:"Kansas City, MO",  been:[1,1,1,1,1]},
@@ -535,7 +535,7 @@ const parks=[
   {team:"Phillies",     stadium:"Citizens Bank Park",    city:"Philadelphia, PA", been:[0,1,0,0,0]},
   {team:"Nationals",    stadium:"Nationals Park",        city:"Washington, DC",   been:[1,1,1,0,0]},
   {team:"Marlins",      stadium:"loanDepot Park",        city:"Miami, FL",        been:[0,1,0,0,0], reset:true},
-  {team:"Cardinals",    stadium:"Busch Stadium",         city:"St. Louis, MO",    been:[1,1,0,0,0]},
+  {team:"Cardinals",    stadium:"Busch Stadium",         city:"St. Louis, MO",    been:[1,1,0,0,0], livesHere:true},
   {team:"Cubs",         stadium:"Wrigley Field",         city:"Chicago, IL",      been:[1,1,1,1,1]},
   {team:"Brewers",      stadium:"American Family Field", city:"Milwaukee, WI",    been:[1,1,0,0,0]},
   {team:"Pirates",      stadium:"PNC Park",              city:"Pittsburgh, PA",   been:[1,1,1,1,1]},
@@ -548,7 +548,7 @@ const parks=[
 ];
 parks.forEach(p=>{
   p.count=p.been.reduce((a,b)=>a+b,0);
-  p.eligible = p.count<3 || p.reset;       // fewer than 3 of us have been (reset = new park in an old city)
+  p.eligible = (p.count<3 || p.reset) && !p.livesHere;  // <3 of us been (reset=new park); never if one of us lives there
   p.weight = p.count===0 ? 2 : 1;          // never-been parks go in the hat double
 });
 
@@ -583,9 +583,9 @@ document.getElementById('eligibleGrid').innerHTML = eligibleParks.map(p=>
 ).join('');
 
 document.getElementById('maxedOut').innerHTML =
-  `<h4>🚫 Off the table — too popular (3 or more of us have been)</h4>
-   <p class="note">The hat is forbidden from drawing these. We've worn them out.</p>
-   <div class="chips">${maxedParks.map(p=>`<span class="chip">${p.team} <b>${p.count}/5</b></span>`).join('')}</div>`;
+  `<h4>🚫 Off the table</h4>
+   <p class="note">Burned by the rules: 3+ of us have been, or 🏠 one of us lives there.</p>
+   <div class="chips">${maxedParks.map(p=>`<span class="chip">${p.team} <b>${p.livesHere?'🏠 lives here':p.count+'/5'}</b></span>`).join('')}</div>`;
 
 /* add an eligible-count tile to the stat bar */
 document.getElementById('statsBar').insertAdjacentHTML('beforeend',
